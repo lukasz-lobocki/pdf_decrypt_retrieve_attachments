@@ -24,7 +24,7 @@ def pdf_has_attachments(file_path: str) -> bool:
         return False
 
 
-def unlock_pdf(file_path: str):
+def unlock_pdf(file_path: str) -> None:
     password = None
     print("reading passwords")
     with open(pass_file_path, "r") as f:
@@ -49,7 +49,7 @@ def unlock_pdf(file_path: str):
         print("empty password file")
 
 
-def extract_pdf_attachments(file_path: str):
+def extract_pdf_attachments(file_path: str) -> None:
     with pikepdf.open(file_path) as pdf:
         ats = pdf.attachments
         for atm in ats:
