@@ -35,12 +35,15 @@ def unlock_pdf(file_path: str):
             with pikepdf.open(
                 file_path, password=password, allow_overwriting_input=True
             ) as pdf:
-                # print("password is working")
                 print("unlocked succesfully")
                 pdf.save(file_path)
                 break
         except pikepdf.PasswordError:
-            print("password is not working")
+            print(
+                "password {f}***{l} is not working".format(
+                    f=password[0], l=password[-1]
+                )
+            )
             continue
     if password is None:
         print("empty password file")
