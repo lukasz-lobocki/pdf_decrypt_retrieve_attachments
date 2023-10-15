@@ -59,12 +59,12 @@ def extract_pdf_attachments(file_path: str):
                 try:
                     with open(trg_file_path, "wb") as wb:
                         wb.write(ats.get(atm).obj["/EF"]["/F"].read_bytes())
-                        print("saved: ", trg_file_path)
+                        print("saved ", trg_file_path)
                 except:
                     print("error ", trg_file_path)
                     continue
             else:
-                print("skipped: ", trg_filename)
+                print("skipped ", trg_filename)
 
 
 src_file_path = os.environ.get("DOCUMENT_WORKING_PATH")
