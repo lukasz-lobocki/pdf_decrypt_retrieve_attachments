@@ -26,7 +26,7 @@ def pdf_has_attachments(file_path: str) -> bool:
 
 def unlock_pdf(file_path: str) -> None:
     password = None
-    print("reading passwords")
+    print("Reading passwords from {pf}".format(pf=pass_file_path))
     with open(pass_file_path, "r") as f:
         passwords = f.readlines()
     for p in passwords:
@@ -35,18 +35,22 @@ def unlock_pdf(file_path: str) -> None:
             with pikepdf.open(
                 file_path, password=password, allow_overwriting_input=True
             ) as pdf:
-                print("unlocked succesfully")
+                print(
+                    "Unlocked succesfully with password {f}***{l}".format(
+                        f=password[0], l=password[-1]
+                    )
+                )
                 pdf.save(file_path)
                 break
         except pikepdf.PasswordError:
             print(
-                "password {f}***{l} is not working".format(
+                "Password {f}***{l} is not working".format(
                     f=password[0], l=password[-1]
                 )
             )
             continue
     if password is None:
-        print("empty password file")
+        print("Empty password file {pf}".format(pf=pass_file_path))
 
 
 def extract_pdf_attachments(file_path: str) -> None:
@@ -59,12 +63,12 @@ def extract_pdf_attachments(file_path: str) -> None:
                 try:
                     with open(trg_file_path, "wb") as wb:
                         wb.write(ats.get(atm).obj["/EF"]["/F"].read_bytes())
-                        print("saved ", trg_file_path)
+                        print("Saved file {tf}".format(tf=trg_filename))
                 except:
-                    print("error ", trg_file_path)
+                    print("Error saving file {tf}".format(tf=trg_filename))
                     continue
             else:
-                print("skipped ", trg_filename)
+                print("Skipped file {tf}".format(tf=trg_filename))
 
 
 src_file_path = os.environ.get("DOCUMENT_WORKING_PATH")
@@ -72,21 +76,21 @@ pass_file_path = "/usr/src/paperless/scripts/passwords.txt"
 consume_path = "/usr/src/paperless/consume/"
 
 if src_file_path is None:
-    print("no file path")
+    print("No file path {sfp}".format(sfp=src_file_path))
     exit(0)
 
 if not is_pdf(src_file_path):
-    print("not pdf")
+    print("Not pdf file {sfp}".format(sfp=src_file_path))
     exit(0)
 
 if is_pdf_encrypted(src_file_path):
-    print("decrypting pdf")
+    print("Decrypting pdf file {sfp}".format(sfp=src_file_path))
     unlock_pdf(src_file_path)
 else:
-    print("not encrypted")
+    print("Not encrypted file {sfp}".format(sfp=src_file_path))
 
 if pdf_has_attachments(src_file_path):
-    print("getting attachments")
+    print("Getting attachments from file {sfp}".format(sfp=src_file_path))
     extract_pdf_attachments(src_file_path)
 else:
-    print("no attachments")
+    print("No attachments in file {sfp}".format(sfp=src_file_path))
