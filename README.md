@@ -40,7 +40,7 @@ We need to configure the Python script to run, when a new files is processed by 
 #### docker-compose.yml
 
 1. Open your docker configuration file of Paperless-ngx. `<paperless-ngx_root>/docker-compose.yml`
-2. :information_source: See the example. Make sure that the script folder is available to the docker container.
+2. :information_source: See the [example](docker-compose.yml). Make sure that the script folder is available to the docker container.
 
     ```text
     services.webserver.volumes:
@@ -56,7 +56,7 @@ We need to configure the Python script to run, when a new files is processed by 
 #### docker-compose.env
 
 1. Open your docker environment file of Paperless-ngx. `<paperless-ngx_root>/docker-compose.env`
-2. :information_source: See the example. Set the script path.
+2. :information_source: See the [example](docker-compose.env). Set the script path.
 
     ```text
     PAPERLESS_PRE_CONSUME_SCRIPT=/usr/src/paperless/scripts/pre-consumption.py
