@@ -35,19 +35,19 @@ Next, you’ll need to write the pre-consumption script. This script will use th
 
 ### 3. Configure the pre-consumption script to be run
 
-Finally we need to configure the Python script to run, when a new files is processed by Paperless-ngx.
+We need to configure the Python script to run, when a new files is processed by Paperless-ngx.
 
 #### docker-compose.yml
 
 1. Open your docker configuration file of Paperless-ngx. `<paperless-ngx_root>/docker-compose.yml`
-2. Make sure that the script folder is available to the docker container. See the example.
+2. :information_source: See the example. Make sure that the script folder is available to the docker container.
 
     ```text
     services.webserver.volumes:
         - <paperless-ngx_root>/scripts:/usr/src/paperless/scripts     
     ```
 
-3. Make sure that the environment file is porcessed.
+3. Make sure that the environment file is processed.
 
     ```text
     services.env_file: docker-compose.env
@@ -56,7 +56,7 @@ Finally we need to configure the Python script to run, when a new files is proce
 #### docker-compose.env
 
 1. Open your docker environment file of Paperless-ngx. `<paperless-ngx_root>/docker-compose.env`
-2. Set the script path. See the example.
+2. :information_source: See the example. Set the script path.
 
     ```text
     PAPERLESS_PRE_CONSUME_SCRIPT=/usr/src/paperless/scripts/pre-consumption.py
