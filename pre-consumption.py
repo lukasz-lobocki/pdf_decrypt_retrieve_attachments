@@ -5,7 +5,7 @@ import pikepdf
 
 
 def is_pdf(file_path: str) -> bool:
-    return os.path.splitext(file_path)[1] == ".pdf"
+    return os.path.splitext(file_path.lower())[1] == ".pdf"
 
 
 def is_pdf_encrypted(file_path: str) -> bool:
