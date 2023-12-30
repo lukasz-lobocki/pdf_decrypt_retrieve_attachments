@@ -1,4 +1,4 @@
-# pdf_decrpt_attch
+# pdf_decrypt_retrieve_attachments
 Decrypt and extract embedded pdf attachments.
 
 ## Credit
