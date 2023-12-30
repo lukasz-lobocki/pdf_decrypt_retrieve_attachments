@@ -1,8 +1,10 @@
 # pdf_decrypt_retrieve_attachments
+
 Decrypt and extract embedded pdf attachments.
 
 ## Credit
-Based on https://piep.tech/posts/automatic-password-removal-in-paperless-ngx/
+
+Based on <https://piep.tech/posts/automatic-password-removal-in-paperless-ngx/>
 
 ## Setup
 
