@@ -24,73 +24,78 @@ def pdf_has_attachments(file_path: str) -> bool:
         return False
 
 
-def unlock_pdf(file_path: str) -> None:
+def decrypt_pdf(in_file_path: str, pass_file_path: str) -> None:
     password = None
-    print("Reading passwords from {pf}".format(pf=pass_file_path))
+    print("Reading passwords from {}".format(pass_file_path))
     with open(pass_file_path, "r") as f:
         passwords = f.readlines()
-    for p in passwords:
+    for idx, p in enumerate(passwords):
         password = p.strip()
         try:
             with pikepdf.open(
-                file_path, password=password, allow_overwriting_input=True
+                in_file_path, password=password, allow_overwriting_input=True
             ) as pdf:
+                pdf.save(in_file_path)
                 print(
-                    "Unlocked succesfully with password {f}***{l}".format(
-                        f=password[0], l=password[-1]
+                    "{} overwritten. Decrypted with password #{}".format(
+                        in_file_path, idx + 1
                     )
                 )
-                pdf.save(file_path)
                 break
         except pikepdf.PasswordError:
-            print(
-                "Password {f}***{l} is not working".format(
-                    f=password[0], l=password[-1]
-                )
-            )
+            print("Password #{} is not working".format(idx + 1))
             continue
     if password is None:
-        print("Empty password file {pf}".format(pf=pass_file_path))
+        print("Empty password file {}".format(pass_file_path))
 
 
-def extract_pdf_attachments(file_path: str) -> None:
-    with pikepdf.open(file_path) as pdf:
+def extract_pdf_attachments(in_file_path: str, out_path: str) -> None:
+    with pikepdf.open(in_file_path) as pdf:
         ats = pdf.attachments
         for atm in ats:
-            trg_filename = ats.get(atm).filename
-            if is_pdf(trg_filename):
-                trg_file_path = os.path.join(consume_path, trg_filename)
+            out_filename = ats.get(atm).filename
+            if is_pdf(out_filename):
+                out_file_path = os.path.join(out_path, out_filename)
                 try:
-                    with open(trg_file_path, "wb") as wb:
+                    with open(out_file_path, "wb") as wb:
                         wb.write(ats.get(atm).obj["/EF"]["/F"].read_bytes())
-                        print("Saved file {tf}".format(tf=trg_filename))
+                        print(
+                            "{} extracted from {}".format(out_file_path, in_file_path)
+                        )
                 except:
-                    print("Error saving file {tf}".format(tf=trg_filename))
+                    print("Error saving {} from {}".format(out_file_path, in_file_path))
                     continue
             else:
-                print("Skipped file {tf}".format(tf=trg_filename))
+                print("Skipped non-pdf file {}".format(out_filename))
 
 
-src_file_path = os.environ.get("DOCUMENT_WORKING_PATH")
-pass_file_path = "/usr/src/paperless/scripts/passwords.txt"
+task_id = os.environ.get("TASK_ID")
+document_working_path = os.environ.get("DOCUMENT_WORKING_PATH")
+passwords_path = "/usr/src/paperless/scripts/passwords.txt"
 consume_path = "/usr/src/paperless/consume/"
 
-if src_file_path is None:
-    print("No file path {sfp}".format(sfp=src_file_path))
+print("*** STARTING pre-consumption {} ***".format(task_id))
+print(" ")
+
+if document_working_path is None:
+    print("No working path {}".format(document_working_path))
     exit(0)
 
-if not is_pdf(src_file_path):
-    print("Not pdf file {sfp}".format(sfp=src_file_path))
+if not is_pdf(document_working_path):
+    print("{} is not a pdf".format(document_working_path))
     exit(0)
 
-if is_pdf_encrypted(src_file_path):
-    print("Decrypting pdf file {sfp}".format(sfp=src_file_path))
-    unlock_pdf(src_file_path)
+if is_pdf_encrypted(document_working_path):
+    print("Decrypting {}".format(document_working_path))
+    decrypt_pdf(document_working_path, passwords_path)
 else:
-    print("Not encrypted file {sfp}".format(sfp=src_file_path))
+    print("Not encrypted {}".format(document_working_path))
 
-if pdf_has_attachments(src_file_path):
-    print("Getting attachments from file {sfp}".format(sfp=src_file_path))
-    extract_pdf_attachments(src_file_path)
+if pdf_has_attachments(document_working_path):
+    print("Extracting attachments from {}".format(document_working_path))
+    extract_pdf_attachments(document_working_path, consume_path)
 else:
-    print("No attachments in file {sfp}".format(sfp=src_file_path))
+    print("No attachments in {}".format(document_working_path))
+
+print(" ")
+print("=== STOPPING pre-consumption {} ===".format(task_id))
