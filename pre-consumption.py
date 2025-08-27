@@ -32,15 +32,9 @@ def decrypt_pdf(in_file_path: str, pass_file_path: str) -> None:
     for idx, p in enumerate(passwords):
         password = p.strip()
         try:
-            with pikepdf.open(
-                in_file_path, password=password, allow_overwriting_input=True
-            ) as pdf:
-                pdf.save(in_file_path)
-                print(
-                    "{} overwritten. Decrypted with password #{}".format(
-                        in_file_path, idx + 1
-                    )
-                )
+            with pikepdf.open(in_file_path, password=password, allow_overwriting_input=True) as pdf:
+                pdf.save(in_file_path, deterministic_id=True)
+                print("{} overwritten. Decrypted with password #{}".format(in_file_path, idx + 1))
                 break
         except pikepdf.PasswordError:
             print("Password #{} is not working".format(idx + 1))
@@ -59,9 +53,7 @@ def extract_pdf_attachments(in_file_path: str, out_path: str) -> None:
                 try:
                     with open(out_file_path, "wb") as wb:
                         wb.write(ats.get(atm).obj["/EF"]["/F"].read_bytes())
-                        print(
-                            "{} extracted from {}".format(out_file_path, in_file_path)
-                        )
+                        print("{} extracted from {}".format(out_file_path, in_file_path))
                 except:
                     print("Error saving {} from {}".format(out_file_path, in_file_path))
                     continue
